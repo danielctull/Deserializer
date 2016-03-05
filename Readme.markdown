@@ -1,8 +1,8 @@
-h1. DCTManagedObjectSerialization
+# Deserializer
 
-DCTManagedObjectSerialization is a method of deserializing dictionaries into managed objects.
+Deserializer is a library to coerce dictionaries into managed objects.
 
-h2. Features
+## Features
 
 * Set "serializationName" to map a dictionary key to a managed object property of a different name
 * Set "serializationTransformerNames" to transform values from dictionary values to managed object attributes
@@ -10,9 +10,9 @@ h2. Features
 * Set "serializationShouldBeUnion" to add an array to a toMany relationship (as opposed to just setting it)
 * Set all these conversion properties in the Core Data model editor
 
-h2. License
+## License
 
-Copyright (C) 2012 Daniel Tull. All rights reserved.
+Copyright (C) 2016 Daniel Tull. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  
