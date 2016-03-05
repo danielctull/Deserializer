@@ -219,6 +219,22 @@ class DeserializerTests: XCTestCase {
 		}
 	}
 
+	func testObjectKeypath() {
+		let expectation = self.expectationWithDescription("testObjectKeypath")
+		var serializationInfo = SerializationInfo()
+		serializationInfo.serializationName[personID] = "id.string"
+		serializationInfo.uniqueAttributes[personEntity] = [personID]
+		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
+		deserializer.deserialize(entity: personEntity, dictionary: [ "id" : [ "string" : "1"]]) { (person: Person?) in
+			XCTAssertNotNil(person)
+			XCTAssertEqual(person?.personID, "1")
+			expectation.fulfill()
+		}
+		waitForExpectationsWithTimeout(30) { error in
+			XCTAssertNil(error)
+		}
+	}
+
 	// MARK: Relationships
 
 	func testRelationship() {

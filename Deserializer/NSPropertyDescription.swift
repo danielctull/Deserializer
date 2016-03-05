@@ -8,7 +8,7 @@ extension NSPropertyDescription {
 		let serializationName = serializationInfo.serializationName[self]
 
 		// If there is no value in the dictionary, return .None
-		guard let serializedValue = serializedDictionary[serializationName] else {
+		guard let serializedValue = (serializedDictionary as NSDictionary).valueForKeyPath(serializationName) else {
 			return .None
 		}
 
