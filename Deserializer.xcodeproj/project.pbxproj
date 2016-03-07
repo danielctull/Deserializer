@@ -1069,7 +1069,10 @@
 			baseConfigurationReference = 24513EBE1C8A104D0080D250 /* Debug.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.danieltull.${PRODUCT_NAME:rfc1034identifier}";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -1078,7 +1081,10 @@
 			baseConfigurationReference = 24513ED21C8A104D0080D250 /* Release.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.danieltull.${PRODUCT_NAME:rfc1034identifier}";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
