@@ -3,7 +3,7 @@ import CoreData
 
 extension NSPropertyDescription {
 
-	func transformedValue(serializedDictionary serializedDictionary: SerializedDictionary, serializationInfo: SerializationInfo) -> Value{
+	func transformedValue(serializedDictionary serializedDictionary: SerializedDictionary, serializationInfo: SerializationInfo) -> Value {
 
 		let serializationName = serializationInfo.serializationName[self]
 
