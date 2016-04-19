@@ -18,7 +18,10 @@ extension NSPropertyDescription {
 			transformedValue = transformer.transformedValue(transformedValue)
 		}
 
-		guard let value = transformedValue else {
+		guard
+			let value = transformedValue
+			where !(value is NSNull)
+		else {
 			return .Nil
 		}
 
