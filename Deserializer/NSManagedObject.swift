@@ -11,7 +11,7 @@ extension NSManagedObject {
 			case .Some: break
 
 			case .Nil:
-				if serializationInfo.shouldDeserializeNilValues[entity] {
+				if attribute.optional && serializationInfo.shouldDeserializeNilValues[entity] {
 					setValue(nil, forKey: attribute.name)
 				}
 
