@@ -10,16 +10,17 @@ extension NSManagedObjectContext {
 		fetchRequest.predicate = predicate
 		fetchRequest.fetchLimit = 1
 
-		do {
-			let results = try fetch(fetchRequest)
-			guard let object = results.first else {
-				throw DeserializerError.unknown
-			}
-			return object
-
-		} catch {
-			return object(entity: entity)
+		// If the fetch fails or returns no results, 
+		// we create a new managed object and return 
+		// that.
+		guard
+			let results = try? fetch(fetchRequest),
+			let object = results.first
+		else {
+			return self.object(entity: entity)
 		}
+
+		return object
 	}
 
 	func object(entity: NSEntityDescription) -> NSManagedObject {
