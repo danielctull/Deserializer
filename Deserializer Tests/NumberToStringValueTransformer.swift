@@ -1,7 +1,7 @@
 
 import Foundation
 
-class NumberToStringValueTransformer: NSValueTransformer {
+class NumberToStringValueTransformer: ValueTransformer {
 
 	override class func transformedValueClass() -> AnyClass {
 		return NSString.self
@@ -11,7 +11,7 @@ class NumberToStringValueTransformer: NSValueTransformer {
 		return false
 	}
 
-	override func transformedValue(value: AnyObject?) -> AnyObject? {
+	override func transformedValue(_ value: Any?) -> Any? {
 
 		guard let value = value as? NSNumber else {
 			return nil

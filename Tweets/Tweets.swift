@@ -6,42 +6,42 @@ import CoreData
 
 public class Tweets {
 
-	public static func bundle() -> NSBundle {
-		return NSBundle(forClass: self)
+	public static func bundle() -> Bundle {
+		return Bundle(for: self)
 	}
 
-	public static func importTweets(completion: [Tweet] -> Void) {
+	public static func importTweets(_ completion: @escaping ([Tweet]) -> Void) {
 
-		let queue = dispatch_queue_create("Tweets", nil)
-		dispatch_async(queue) {
+		let queue = DispatchQueue(label: "Tweets", attributes: [])
+		queue.async {
 
 			let bundle = self.bundle()
-			guard let model = NSManagedObjectModel.mergedModelFromBundles([bundle]) else {
+			guard let model = NSManagedObjectModel.mergedModel(from: [bundle]) else {
 				return
 			}
 
-			guard let tweetsURL = bundle.URLForResource("Tweets", withExtension: "json") else {
+			guard let tweetsURL = bundle.url(forResource: "Tweets", withExtension: "json") else {
 				return
 			}
 
-			guard let data = NSData(contentsOfURL: tweetsURL) else {
+			guard let data = try? Data(contentsOf: tweetsURL) else {
 				return
 			}
 
 			let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
 
 			do {
-				try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
-				let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+				try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
+				let managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
 				managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
 
 				let deserializer = Deserializer(managedObjectContext: managedObjectContext)
 
-				guard let tweetsArray = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? SerializedArray else {
+				guard let tweetsArray = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments) as? SerializedArray else {
 					return
 				}
 
-				let tweetEntity = Tweet.entity(managedObjectContext)
+				let tweetEntity = Tweet.entity(managedObjectContext)!
 				deserializer.deserialize(entity: tweetEntity, array: tweetsArray, completion: completion)
 
 			} catch {}

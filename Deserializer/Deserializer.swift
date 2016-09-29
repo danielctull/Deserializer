@@ -2,11 +2,11 @@
 import Foundation
 import CoreData
 
-public enum DeserializerError: ErrorType {
-	case Unknown
+public enum DeserializerError: Error {
+	case unknown
 }
 
-public typealias SerializedDictionary = [ String : AnyObject ]
+public typealias SerializedDictionary = [ String : Any ]
 public typealias SerializedArray = [ SerializedDictionary ]
 
 public class Deserializer {
@@ -19,9 +19,9 @@ public class Deserializer {
 		self.serializationInfo = serializationInfo
 	}
 
-	public func deserialize<T>(entity entity: NSEntityDescription, array: SerializedArray, completion: [T] -> Void) {
+	public func deserialize<T>(entity: NSEntityDescription, array: SerializedArray, completion: @escaping ([T]) -> Void) {
 
-		managedObjectContext.performBlock {
+		managedObjectContext.perform {
 
 			let objects = self.deserialize(entity: entity, array: array)
 			var typedObjects: [T] = []
@@ -43,13 +43,13 @@ public class Deserializer {
 		}
 	}
 
-	public func deserialize<T>(entity entity: NSEntityDescription, dictionary: SerializedDictionary, completion: T? -> Void) {
+	public func deserialize<T>(entity: NSEntityDescription, dictionary: SerializedDictionary, completion: @escaping (T?) -> Void) {
 		deserialize(entity: entity, array: [dictionary]) { objects in
 			completion(objects.first)
 		}
 	}
 
-	func deserialize(entity entity: NSEntityDescription, array: SerializedArray) -> [NSManagedObject] {
+	func deserialize(entity: NSEntityDescription, array: SerializedArray) -> [NSManagedObject] {
 
 		var objects: [NSManagedObject] = []
 
@@ -80,7 +80,7 @@ public class Deserializer {
 		return objects
 	}
 
-	func deserialize(entity entity: NSEntityDescription, dictionary: SerializedDictionary) -> NSManagedObject? {
+	func deserialize(entity: NSEntityDescription, dictionary: SerializedDictionary) -> NSManagedObject? {
 		return deserialize(entity: entity, array: [dictionary]).first
 	}
 }

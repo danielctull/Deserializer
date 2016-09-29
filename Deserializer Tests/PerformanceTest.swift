@@ -7,13 +7,13 @@ import Tweets
 class PerformanceTest: XCTestCase {
     
     func testTweets() {
-		measureBlock() {
-			let expectation = self.expectationWithDescription("Tweets")
+		measure() {
+			let expectation = self.expectation(description: "Tweets")
 			Tweets.importTweets { tweets in
 				XCTAssert(tweets.count == 575)
 				expectation.fulfill()
 			}
-			self.waitForExpectationsWithTimeout(30) { error in
+			self.waitForExpectations(timeout: 30) { error in
 				XCTAssertNil(error)
 			}
 		}

@@ -3,7 +3,7 @@ import CoreData
 
 extension NSEntityDescription {
 
-	func predicateForUniqueObject(serializedDictionary serializedDictionary: SerializedDictionary, serializationInfo: SerializationInfo) -> NSPredicate? {
+	func predicateForUniqueObject(serializedDictionary: SerializedDictionary, serializationInfo: SerializationInfo) -> NSPredicate? {
 
 		let uniqueAttributes = serializationInfo.uniqueAttributes[self]
 		var predicates: [NSPredicate] = []
@@ -14,10 +14,10 @@ extension NSEntityDescription {
 			let predicate: NSPredicate
 
 			switch value {
-				case .Nil: predicate = NSPredicate(format: "%K == nil", argumentArray: [attribute.name])
-				case .None: continue
-				case .One(let object): predicate = NSPredicate(format: "%K == %@", argumentArray: [attribute.name, object])
-				case .Some(let object): predicate = NSPredicate(format: "%K == %@", argumentArray: [attribute.name, object])
+				case .nil: predicate = NSPredicate(format: "%K == nil", argumentArray: [attribute.name])
+				case .none: continue
+				case .one(let object): predicate = NSPredicate(format: "%K == %@", argumentArray: [attribute.name, object])
+				case .some(let object): predicate = NSPredicate(format: "%K == %@", argumentArray: [attribute.name, object])
 			}
 
 			predicates.append(predicate)

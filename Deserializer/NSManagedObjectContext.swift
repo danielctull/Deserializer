@@ -3,17 +3,17 @@ import CoreData
 
 extension NSManagedObjectContext {
 
-	func object(entity entity: NSEntityDescription, predicate: NSPredicate) -> NSManagedObject {
+	func object(entity: NSEntityDescription, predicate: NSPredicate) -> NSManagedObject {
 
-		let fetchRequest = NSFetchRequest()
+		let fetchRequest = NSFetchRequest<NSManagedObject>()
 		fetchRequest.entity = entity
 		fetchRequest.predicate = predicate
 		fetchRequest.fetchLimit = 1
 
 		do {
-			let results = try executeFetchRequest(fetchRequest)
-			guard let object = results.first as? NSManagedObject else {
-				throw DeserializerError.Unknown
+			let results = try fetch(fetchRequest)
+			guard let object = results.first else {
+				throw DeserializerError.unknown
 			}
 			return object
 
@@ -22,7 +22,7 @@ extension NSManagedObjectContext {
 		}
 	}
 
-	func object(entity entity: NSEntityDescription) -> NSManagedObject {
-		return NSManagedObject(entity: entity, insertIntoManagedObjectContext: self)
+	func object(entity: NSEntityDescription) -> NSManagedObject {
+		return NSManagedObject(entity: entity, insertInto: self)
 	}
 }

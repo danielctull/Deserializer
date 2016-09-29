@@ -1,7 +1,7 @@
 
 enum Value {
-	case One(AnyObject)
-	case Some([AnyObject])
-	case Nil
-	case None
+	case one(AnyObject)
+	case some([AnyObject])
+	case `nil`
+	case none
 }

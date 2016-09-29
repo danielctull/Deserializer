@@ -4,42 +4,42 @@ import CoreData
 
 extension NSRelationshipDescription {
 
-	func value(serializedDictionary serializedDictionary: SerializedDictionary, deserializer: Deserializer) -> Value {
+	func value(serializedDictionary: SerializedDictionary, deserializer: Deserializer) -> Value {
 
 		// If there is no detination entity return .None
 		guard let destinationEntity = destinationEntity else {
-			return .None
+			return .none
 		}
 
 		let value = transformedValue(serializedDictionary: serializedDictionary, serializationInfo: deserializer.serializationInfo)
 
 		switch value {
-			case .Nil: return .Nil
-			case .None: return .None
+			case .nil: return .nil
+			case .none: return .none
 
-			case .Some(let objects):
+			case .some(let objects):
 
 				guard
-					let array = objects as? SerializedArray
-					where toMany
+					let array = objects as? SerializedArray,
+					isToMany
 				else {
-					return .None
+					return .none
 				}
 
 				let objects = deserializer.deserialize(entity: destinationEntity, array: array)
-				return .Some(objects)
+				return .some(objects)
 
-			case .One(let object):
+			case .one(let object):
 
 				guard
-					let dictionary = object as? SerializedDictionary
-					where !toMany,
+					let dictionary = object as? SerializedDictionary,
+					!isToMany,
 					let object = deserializer.deserialize(entity: destinationEntity, dictionary: dictionary)
 				else {
-					return .None
+					return .none
 				}
 
-				return .One(object)
+				return .one(object)
 		}
 	}
 }

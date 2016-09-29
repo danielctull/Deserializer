@@ -3,34 +3,34 @@ import CoreData
 
 extension NSManagedObject {
 
-	func set(value value: Value, attribute: NSAttributeDescription, serializationInfo: SerializationInfo) {
+	func set(value: Value, attribute: NSAttributeDescription, serializationInfo: SerializationInfo) {
 
 		switch value {
 
-			case .None: break
-			case .Some: break
+			case .none: break
+			case .some: break
 
-			case .Nil:
-				if attribute.optional && serializationInfo.shouldDeserializeNilValues[entity] {
+			case .nil:
+				if attribute.isOptional && serializationInfo.shouldDeserializeNilValues[entity] {
 					setValue(nil, forKey: attribute.name)
 				}
 
-			case .One(let object):
+			case .one(let object):
 				validateAndSetValue(object, forAttribute: attribute)
 		}
 	}
 
-	private func validateAndSetValue(value: AnyObject, forAttribute attribute: NSAttributeDescription) {
+	private func validateAndSetValue(_ value: AnyObject, forAttribute attribute: NSAttributeDescription) {
 
 		// TYPE VALIDATION
 
 		guard
-			let object = value as? NSObject
-			where validateType(object: object, forAttribute: attribute)
+			let object = value as? NSObject,
+			validateType(object: object, forAttribute: attribute)
 		else {
 			let entityName = entity.name ?? "Unknown Entity" // Unlikely to happen
 			let desiredType = attribute.attributeValueClassName ?? "Unknown Type"
-			print("[Deserializer] Unacceptable type of value for attribute: entity = \(entityName); property = \(attribute.name); desired type = \(desiredType); given type = \(value.dynamicType); value = \(value)")
+			print("[Deserializer] Unacceptable type of value for attribute: entity = \(entityName); property = \(attribute.name); desired type = \(desiredType); given type = \(type(of: value)); value = \(value)")
 			return
 		}
 
@@ -40,14 +40,14 @@ extension NSManagedObject {
 			validate(value: value, forAttribute: attribute)
 		else {
 			let entityName = entity.name ?? "Unknown Entity"
-			print("[Deserializer] Failed validation of value for attribute: entity = \(entityName); property = \(attribute.name); type = \(value.dynamicType); value = \(value)")
+			print("[Deserializer] Failed validation of value for attribute: entity = \(entityName); property = \(attribute.name); type = \(type(of: value)); value = \(value)")
 			return
 		}
 
 		setValue(value, forKey: attribute.name)
 	}
 
-	private func validate(value value: AnyObject, forAttribute attribute: NSAttributeDescription) -> Bool {
+	private func validate(value: AnyObject, forAttribute attribute: NSAttributeDescription) -> Bool {
 
 		do {
 			var v: AnyObject? = value
@@ -58,7 +58,7 @@ extension NSManagedObject {
 		}
 	}
 
-	private func validateType(object object: NSObject, forAttribute attribute: NSAttributeDescription) -> Bool {
+	private func validateType(object: NSObject, forAttribute attribute: NSAttributeDescription) -> Bool {
 
 		// If there's no attributeValueClassName, the type is likely transformable.
 		// Either way we can't provide any further validation.
@@ -69,41 +69,41 @@ extension NSManagedObject {
 			return true
 		}
 
-		return object.isKindOfClass(attributeClass)
+		return object.isKind(of: attributeClass)
 	}
 
-	func set(value value: Value, relationship: NSRelationshipDescription, serializationInfo: SerializationInfo) {
+	func set(value: Value, relationship: NSRelationshipDescription, serializationInfo: SerializationInfo) {
 
 		switch value {
 
-			case .None: break
+			case .none: break
 
-			case .Nil:
+			case .nil:
 				if serializationInfo.shouldDeserializeNilValues[entity] {
 					setValue(nil, forKey: relationship.name)
 				}
 
-			case .One(let object):
-				if !relationship.toMany {
+			case .one(let object):
+				if !relationship.isToMany {
 					setValue(object, forKey: relationship.name)
 				}
 
-			case .Some(let objects):
-				if relationship.toMany {
+			case .some(let objects):
+				if relationship.isToMany {
 
 					if serializationInfo.shouldBeUnion[relationship] {
 
-						if relationship.ordered {
-							let set = mutableOrderedSetValueForKey(relationship.name)
-							set.addObjectsFromArray(objects)
+						if relationship.isOrdered {
+							let set = mutableOrderedSetValue(forKey: relationship.name)
+							set.addObjects(from: objects)
 						} else {
-							let set = mutableSetValueForKey(relationship.name)
-							set.addObjectsFromArray(objects)
+							let set = mutableSetValue(forKey: relationship.name)
+							set.addObjects(from: objects)
 						}
 
 					} else {
 
-						if relationship.ordered {
+						if relationship.isOrdered {
 							setValue(NSOrderedSet(array: objects), forKey: relationship.name)
 						} else {
 							setValue(NSSet(array: objects), forKey: relationship.name)

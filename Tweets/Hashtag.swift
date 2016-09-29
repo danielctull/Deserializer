@@ -16,19 +16,19 @@ class Hashtag: NSManagedObject {
         return "Hashtag"
     }
 
-    public class func entity(managedObjectContext: NSManagedObjectContext!) -> NSEntityDescription! {
-        return NSEntityDescription.entityForName(self.entityName(), inManagedObjectContext: managedObjectContext);
+    public class func entity(_ managedObjectContext: NSManagedObjectContext!) -> NSEntityDescription! {
+        return NSEntityDescription.entity(forEntityName: self.entityName(), in: managedObjectContext);
     }
 
     // MARK: - Life cycle methods
 
-    public override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext!) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    public override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext!) {
+        super.init(entity: entity, insertInto: context)
     }
 
     public convenience init(managedObjectContext: NSManagedObjectContext!) {
         let entity = Hashtag.entity(managedObjectContext)
-        self.init(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
+        self.init(entity: entity!, insertInto: managedObjectContext)
     }
 
     // MARK: - Properties

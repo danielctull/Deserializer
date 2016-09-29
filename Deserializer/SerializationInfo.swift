@@ -8,7 +8,7 @@ public struct SerializationInfo {
 	public var uniqueAttributes = SerializationInfoStorage<NSEntityDescription,[NSAttributeDescription]>(userInfoKey: UserInfoKeys.uniqueKeys, transformer: stringToProperties)
 	public var shouldDeserializeNilValues = SerializationInfoStorage<NSEntityDescription,Bool>(userInfoKey: UserInfoKeys.shouldDeserializeNilValues, transformer: stringToBool)
 	public var serializationName = SerializationInfoStorage<NSPropertyDescription,String>(userInfoKey: UserInfoKeys.serializationName, transformer: stringToSerializationName)
-	public var transformers = SerializationInfoStorage<NSPropertyDescription,[NSValueTransformer]>(userInfoKey: UserInfoKeys.transformerNames, transformer: stringToTransformers)
+	public var transformers = SerializationInfoStorage<NSPropertyDescription,[ValueTransformer]>(userInfoKey: UserInfoKeys.transformerNames, transformer: stringToTransformers)
 	public var shouldBeUnion = SerializationInfoStorage<NSRelationshipDescription,Bool>(userInfoKey: UserInfoKeys.shouldBeUnion, transformer: stringToBool)
 
 	private struct UserInfoKeys {
@@ -34,25 +34,25 @@ public struct SerializationInfo {
 			return []
 		}
 
-		let noWhiteSpaceString = string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-		let names = noWhiteSpaceString.componentsSeparatedByString(",")
+		let noWhiteSpaceString = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		let names = noWhiteSpaceString.components(separatedBy: ",")
 		let attributes = names.map { entity.attributesByName[$0] }
 							  .filter { return $0 != nil } // Remove nil values
 							  .map { $0! } // Force unwrap all values, as none are nil
 		return attributes
 	}
 
-	private static let stringToTransformers: (NSPropertyDescription, String?) -> [NSValueTransformer] = { _, string in
+	private static let stringToTransformers: (NSPropertyDescription, String?) -> [ValueTransformer] = { _, string in
 
 		guard let string = string else {
 			return []
 		}
 
-		let noWhiteSpaceString = string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-		let names = noWhiteSpaceString.componentsSeparatedByString(",")
+		let noWhiteSpaceString = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		let names = noWhiteSpaceString.components(separatedBy: ",")
 
 
-		let transformers = names.map { NSValueTransformer(forName: $0) } // Name to transformer
+		let transformers = names.map { ValueTransformer(forName: NSValueTransformerName(rawValue: $0)) } // Name to transformer
 								.filter { return $0 != nil } // Remove nil values
 								.map { $0! } // Force unwrap all values, as none are nil
 		return transformers
@@ -70,7 +70,7 @@ public struct SerializationInfo {
 
 // Allow for a key to be any of the types we require - NSEntityDescription, NSPropertyDescription et al
 public protocol SerializationInfoStorageKey: Hashable {
-	var userInfo: [NSObject : AnyObject]? { get }
+	var userInfo: [AnyHashable : Any]? { get }
 }
 extension NSEntityDescription: SerializationInfoStorageKey {}
 extension NSPropertyDescription: SerializationInfoStorageKey {}
@@ -82,7 +82,7 @@ public struct SerializationInfoStorage<Key: SerializationInfoStorageKey, Value> 
 	private let userInfoKey: String
 	private let transformer: (Key, String?) -> Value
 
-	private init(userInfoKey: String, transformer: (Key, String?) -> Value) {
+	fileprivate init(userInfoKey: String, transformer: @escaping (Key, String?) -> Value) {
 		self.userInfoKey = userInfoKey
 		self.transformer = transformer
 	}
@@ -96,11 +96,11 @@ public struct SerializationInfoStorage<Key: SerializationInfoStorageKey, Value> 
 		}
 	}
 
-	public mutating func setValue(value: Value?, forKey key: Key) {
+	public mutating func setValue(_ value: Value?, forKey key: Key) {
 		values[key] = value
 	}
 
-	public func valueForKey(key: Key) -> Value {
+	public func valueForKey(_ key: Key) -> Value {
 
 		if let value = values[key] {
 			return value

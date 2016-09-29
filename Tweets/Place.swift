@@ -26,19 +26,19 @@ class Place: NSManagedObject {
         return "Place"
     }
 
-    public class func entity(managedObjectContext: NSManagedObjectContext!) -> NSEntityDescription! {
-        return NSEntityDescription.entityForName(self.entityName(), inManagedObjectContext: managedObjectContext);
+    public class func entity(_ managedObjectContext: NSManagedObjectContext!) -> NSEntityDescription! {
+        return NSEntityDescription.entity(forEntityName: self.entityName(), in: managedObjectContext);
     }
 
     // MARK: - Life cycle methods
 
-    public override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext!) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    public override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext!) {
+        super.init(entity: entity, insertInto: context)
     }
 
     public convenience init(managedObjectContext: NSManagedObjectContext!) {
         let entity = Place.entity(managedObjectContext)
-        self.init(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
+        self.init(entity: entity!, insertInto: managedObjectContext)
     }
 
     // MARK: - Properties
@@ -87,27 +87,27 @@ class Place: NSManagedObject {
 
 extension Place {
 
-    func addTweets(objects: NSSet) {
+    func addTweets(_ objects: NSSet) {
         let mutable = self.tweets.mutableCopy() as! NSMutableSet
-        mutable.unionSet(objects as Set<NSObject>)
+        mutable.union(objects as Set<NSObject>)
         self.tweets = mutable.copy() as! NSSet
     }
 
-    func removeTweets(objects: NSSet) {
+    func removeTweets(_ objects: NSSet) {
         let mutable = self.tweets.mutableCopy() as! NSMutableSet
-        mutable.minusSet(objects as Set<NSObject>)
+        mutable.minus(objects as Set<NSObject>)
         self.tweets = mutable.copy() as! NSSet
     }
 
-    func addTweetsObject(value: Tweet!) {
+    func addTweetsObject(_ value: Tweet!) {
         let mutable = self.tweets.mutableCopy() as! NSMutableSet
-        mutable.addObject(value)
+        mutable.add(value)
         self.tweets = mutable.copy() as! NSSet
     }
 
-    func removeTweetsObject(value: Tweet!) {
+    func removeTweetsObject(_ value: Tweet!) {
         let mutable = self.tweets.mutableCopy() as! NSMutableSet
-        mutable.removeObject(value)
+        mutable.remove(value)
         self.tweets = mutable.copy() as! NSSet
     }
 

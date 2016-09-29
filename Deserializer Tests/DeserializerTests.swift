@@ -3,7 +3,7 @@ import XCTest
 import CoreData
 import Deserializer
 
-func assertOptionalEqual<T: Comparable>(value: T?, expected: T) {
+func assertOptionalEqual<T: Comparable>(_ value: T?, expected: T) {
 	guard let left = value else {
 		XCTFail()
 		return
@@ -23,8 +23,8 @@ class DeserializerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 		
-		let bundle = NSBundle(forClass: self.dynamicType)
-		guard let model = NSManagedObjectModel.mergedModelFromBundles([bundle]) else {
+		let bundle = Bundle(for: type(of: self))
+		guard let model = NSManagedObjectModel.mergedModel(from: [bundle]) else {
 			XCTFail()
 			return
 		}
@@ -32,8 +32,8 @@ class DeserializerTests: XCTestCase {
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
 
 		do {
-			try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
-			managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+			try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
+			managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 			managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
 			personEntity = Person.entity(managedObjectContext)
 			eventEntity = Event.entity(managedObjectContext)
@@ -43,20 +43,20 @@ class DeserializerTests: XCTestCase {
     }
 
 	func testBasicObjectCreation() {
-		let expectation = self.expectationWithDescription("testBasicObjectCreation")
+		let expectation = self.expectation(description: "testBasicObjectCreation")
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext)
 		deserializer.deserialize(entity: personEntity, dictionary: SerializedDictionary()) { (person: Person?) in
 			XCTAssertNotNil(person)
 			XCTAssertNil(person?.personID)
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectCreationSettingAttributeWithPropertyNameWhileNotHavingSerializationNameSet() {
-		let expectation = self.expectationWithDescription("testObjectCreationSettingAttributeWithPropertyNameWhileNotHavingSerializationNameSet")
+		let expectation = self.expectation(description: "testObjectCreationSettingAttributeWithPropertyNameWhileNotHavingSerializationNameSet")
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext)
 		deserializer.deserialize(entity: personEntity, dictionary: [ personID.name : "1" ]) { (person: Person?) in
 			defer { expectation.fulfill() }
@@ -64,13 +64,13 @@ class DeserializerTests: XCTestCase {
 			XCTAssertNotNil(person?.personID)
 			XCTAssertEqual(person?.personID, "1")
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectCreationSettingAttributeWithPropertyNameWhileHavingSerializationNameSetYetProvidingThePropertyNameInTheDictionary() {
-		let expectation = self.expectationWithDescription("testObjectCreationSettingAttributeWithPropertyNameWhileHavingSerializationNameSetYetProvidingThePropertyNameInTheDictionary")
+		let expectation = self.expectation(description: "testObjectCreationSettingAttributeWithPropertyNameWhileHavingSerializationNameSetYetProvidingThePropertyNameInTheDictionary")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.serializationName[personID] = "id"
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
@@ -79,13 +79,13 @@ class DeserializerTests: XCTestCase {
 			XCTAssertNil(person?.personID)
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectCreationSettingAttributeWithSerializationNameWhileHavingSerializationNameSet() {
-		let expectation = self.expectationWithDescription("testObjectCreationSettingAttributeWithSerializationNameWhileHavingSerializationNameSet")
+		let expectation = self.expectation(description: "testObjectCreationSettingAttributeWithSerializationNameWhileHavingSerializationNameSet")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.serializationName[personID] = "id"
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
@@ -94,43 +94,43 @@ class DeserializerTests: XCTestCase {
 			XCTAssertEqual(person?.personID, "1")
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 
 	}
 
 	func testObjectCreationSettingAttributeWithSerializationNameWhileNotHavingSerializationNameSet() {
-		let expectation = self.expectationWithDescription("testObjectCreationSettingAttributeWithSerializationNameWhileNotHavingSerializationNameSet")
+		let expectation = self.expectation(description: "testObjectCreationSettingAttributeWithSerializationNameWhileNotHavingSerializationNameSet")
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext)
 		deserializer.deserialize(entity: personEntity, dictionary: [ "id" : "1" ]) { (person: Person?) in
 			XCTAssertNotNil(person)
 			XCTAssertNil(person?.personID)
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectCreationSettingStringAttributeWithNumber() {
-		let expectation = self.expectationWithDescription("testObjectCreationSettingStringAttributeWithNumber")
+		let expectation = self.expectation(description: "testObjectCreationSettingStringAttributeWithNumber")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.serializationName[personID] = "id"
 		serializationInfo.transformers[personID] = [NumberToStringValueTransformer()]
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
-		deserializer.deserialize(entity: personEntity, dictionary: [ "id" : 1 ]) { (person: Person?) in
+		deserializer.deserialize(entity: personEntity, dictionary: [ "id" : 1 as AnyObject ]) { (person: Person?) in
 			XCTAssertNotNil(person)
 			XCTAssertEqual(person?.personID, "1")
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectDuplication() {
-		let expectation = self.expectationWithDescription("testObjectDuplication")
+		let expectation = self.expectation(description: "testObjectDuplication")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.uniqueAttributes[personEntity] = [personID]
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
@@ -143,13 +143,13 @@ class DeserializerTests: XCTestCase {
 				expectation.fulfill()
 			}
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectDuplicationNotSame() {
-		let expectation = self.expectationWithDescription("testObjectDuplicationNotSame")
+		let expectation = self.expectation(description: "testObjectDuplicationNotSame")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.uniqueAttributes[personEntity] = [personID]
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
@@ -161,13 +161,13 @@ class DeserializerTests: XCTestCase {
 				expectation.fulfill()
 			}
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectDuplicationNotSame2() {
-		let expectation = self.expectationWithDescription("testObjectDuplicationNotSame2")
+		let expectation = self.expectation(description: "testObjectDuplicationNotSame2")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.uniqueAttributes[personEntity] = [personID]
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
@@ -179,13 +179,13 @@ class DeserializerTests: XCTestCase {
 				expectation.fulfill()
 			}
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectDuplication2() {
-		let expectation = self.expectationWithDescription("testObjectDuplication2")
+		let expectation = self.expectation(description: "testObjectDuplication2")
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext)
 		deserializer.deserialize(entity: personEntity, dictionary: [ personID.name : "1" ]) { (person1: Person?) in
 			deserializer.deserialize(entity: self.personEntity, dictionary: [ self.personID.name : "2" ]) { (person2: Person?) in
@@ -195,13 +195,13 @@ class DeserializerTests: XCTestCase {
 				expectation.fulfill()
 			}
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectDuplication3() {
-		let expectation = self.expectationWithDescription("testObjectDuplication3")
+		let expectation = self.expectation(description: "testObjectDuplication3")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.serializationName[personID] = "id"
 		serializationInfo.uniqueAttributes[personEntity] = [personID]
@@ -214,13 +214,13 @@ class DeserializerTests: XCTestCase {
 				expectation.fulfill()
 			}
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testObjectKeypath() {
-		let expectation = self.expectationWithDescription("testObjectKeypath")
+		let expectation = self.expectation(description: "testObjectKeypath")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.serializationName[personID] = "id.string"
 		serializationInfo.uniqueAttributes[personEntity] = [personID]
@@ -230,7 +230,7 @@ class DeserializerTests: XCTestCase {
 			XCTAssertEqual(person?.personID, "1")
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
@@ -238,9 +238,9 @@ class DeserializerTests: XCTestCase {
 	// MARK: Relationships
 
 	func testRelationship() {
-		let expectation = self.expectationWithDescription("testRelationship")
+		let expectation = self.expectation(description: "testRelationship")
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext)
-		let dictionary = [ personID.name : "1", PersonRelationships.events : [[ EventAttributes.name : "Party!" ]] ]
+		let dictionary = [ personID.name : "1", PersonRelationships.events : [[ EventAttributes.name : "Party!" ]] ] as [String : Any]
 		deserializer.deserialize(entity: personEntity, dictionary: dictionary) { (person: Person?) in
 			XCTAssertNotNil(person)
 			XCTAssertEqual(person?.personID, "1")
@@ -248,15 +248,15 @@ class DeserializerTests: XCTestCase {
 			XCTAssertEqual(person?.events.first?.name, "Party!")
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testRelationship2() {
-		let expectation = self.expectationWithDescription("testRelationship2")
+		let expectation = self.expectation(description: "testRelationship2")
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext)
-		let dictionary = [ EventAttributes.name : "Party!", EventRelationships.person : [ PersonAttributes.personID : "1" ] ]
+		let dictionary = [ EventAttributes.name : "Party!", EventRelationships.person : [ PersonAttributes.personID : "1" ] ] as [String : Any]
 		deserializer.deserialize(entity: eventEntity, dictionary: dictionary) { (event: Event?) in
 			XCTAssertNotNil(event)
 			XCTAssertEqual(event?.name, "Party!")
@@ -264,13 +264,13 @@ class DeserializerTests: XCTestCase {
 			XCTAssertEqual(event?.person?.personID, "1")
 			expectation.fulfill()
 		}
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}
 
 	func testRelationshipDuplicate() {
-		let expectation = self.expectationWithDescription("testRelationship2")
+		let expectation = self.expectation(description: "testRelationship2")
 		var serializationInfo = SerializationInfo()
 		serializationInfo.uniqueAttributes[personEntity] = [personID]
 		let deserializer = Deserializer(managedObjectContext: managedObjectContext, serializationInfo: serializationInfo)
@@ -290,7 +290,7 @@ class DeserializerTests: XCTestCase {
 			expectation.fulfill()
 		}
 
-		waitForExpectationsWithTimeout(30) { error in
+		waitForExpectations(timeout: 30) { error in
 			XCTAssertNil(error)
 		}
 	}

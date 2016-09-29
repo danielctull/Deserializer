@@ -1,7 +1,7 @@
 
 import Foundation
 
-class URLTransformer: NSValueTransformer {
+class URLTransformer: ValueTransformer {
 
 
 }
