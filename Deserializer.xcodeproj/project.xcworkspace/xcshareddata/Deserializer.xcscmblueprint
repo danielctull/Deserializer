@@ -5,12 +5,14 @@
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "5E14E3690BDD9EA7603E78258F29CCA307496CA6" : 0,
+    "ECC88D295F3D5C1B3182477A6171C6978049008A" : 9223372036854775807,
     "8FDCB8C6CFBA78E0E3667763514775D0D62067AD" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "729BC0FC-94DC-4DB5-BC36-6E1DC2CCF5C8",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "5E14E3690BDD9EA7603E78258F29CCA307496CA6" : "DCTManagedObjectSerialization\/",
-    "8FDCB8C6CFBA78E0E3667763514775D0D62067AD" : "DCTManagedObjectSerialization\/Configurations\/"
+    "5E14E3690BDD9EA7603E78258F29CCA307496CA6" : "Deserializer\/",
+    "ECC88D295F3D5C1B3182477A6171C6978049008A" : "..",
+    "8FDCB8C6CFBA78E0E3667763514775D0D62067AD" : "Deserializer\/Configurations\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Deserializer",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -25,6 +27,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/danielctull\/Xcode-Configurations.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8FDCB8C6CFBA78E0E3667763514775D0D62067AD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:AreaHQ\/area-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ECC88D295F3D5C1B3182477A6171C6978049008A"
     }
   ]
 }
