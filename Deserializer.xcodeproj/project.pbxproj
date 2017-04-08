@@ -714,30 +714,41 @@
 				TargetAttributes = {
 					24513EE71C8A119D0080D250 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = B2M757K4LG;
 					};
 					24513EF31C8A123B0080D250 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = B2M757K4LG;
+					};
+					24513EFF1C8A12640080D250 = {
+						DevelopmentTeam = B2M757K4LG;
 					};
 					24F798061B393D1300F7E4A5 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = B2M757K4LG;
 						LastSwiftMigration = 0800;
 					};
 					24F7983E1B393FFE00F7E4A5 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = B2M757K4LG;
 					};
 					24F7985A1B39415600F7E4A5 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = B2M757K4LG;
 						LastSwiftMigration = 0800;
 					};
 					24F798691B3941AF00F7E4A5 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = B2M757K4LG;
 					};
 					24F798A21B39421A00F7E4A5 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = B2M757K4LG;
 						LastSwiftMigration = 0800;
 					};
 					24F798BE1B39423300F7E4A5 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = B2M757K4LG;
 					};
 				};
 			};
@@ -1072,6 +1083,7 @@
 			baseConfigurationReference = 24513EBE1C8A104D0080D250 /* Debug.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B2M757K4LG;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.danieltull.${PRODUCT_NAME:rfc1034identifier}";
@@ -1085,6 +1097,7 @@
 			baseConfigurationReference = 24513ED21C8A104D0080D250 /* Release.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B2M757K4LG;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.danieltull.${PRODUCT_NAME:rfc1034identifier}";
